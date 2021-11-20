@@ -7,11 +7,8 @@ const HeaderCartButton = ({ onClick }) => {
   const cartContext = useContext(CartContext);
 
   const numberOfCartItems = cartContext.items.reduce((curNumber, item) => {
-    console.log(curNumber);
     return curNumber + item.amount;
   }, 0);
-
-  console.log(cartContext.items);
 
   return (
     <button className={styles.button} onClick={onClick}>

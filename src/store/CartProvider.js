@@ -3,17 +3,37 @@ import CartContext from './cart-context';
 
 const defaultCartState = {
   items: [],
-  totalAmout: 0,
+  totalAmount: 0,
 };
 
 const cartReducer = (state, action) => {
   if (action.type === 'ADD') {
-    const updatedItems = state.items.concat(action.item);
     const updatedTotalAmount =
-      state.totalAmout + action.item.price * action.item.amount;
+      state.totalAmount + action.item.price * action.item.amount;
+
+    const existingCartItemIndex = state.items.findIndex(
+      (item) => item.id === action.item.id,
+    );
+    const existingCartItem = state.items[existingCartItemIndex];
+
+    let updatedItems;
+
+    console.log(existingCartItem);
+    if (existingCartItem) {
+      const updatedItem = {
+        ...existingCartItem,
+        amount: existingCartItem.amount + action.item.amount,
+      };
+      updatedItems = [...state.items];
+      updatedItems[existingCartItemIndex] = updatedItem;
+    } else {
+      updatedItems = { ...action.item };
+      updatedItems = state.items.concat(action.item);
+    }
+
     return {
       items: updatedItems,
-      totalAmout: updatedTotalAmount,
+      totalAmount: updatedTotalAmount,
     };
   }
   if (action.type === 'REMOVE') {
@@ -37,7 +57,7 @@ const CartProvider = ({ children }) => {
 
   const cartContext = {
     items: cartState.items,
-    totalAmout: cartState.totalAmout,
+    totalAmount: cartState.totalAmount,
     addItem: addItemToCartHandler,
     removeItem: removeItemFromCartHandler,
   };
