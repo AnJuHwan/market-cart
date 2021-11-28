@@ -19,13 +19,11 @@ const HeaderCartButton = ({ onClick }) => {
       return;
     }
     setBtnIsHighlighted(true);
-    console.log('1');
     const timer = setTimeout(() => {
       setBtnIsHighlighted(false);
     }, 300);
 
     return () => {
-      console.log('2');
       clearTimeout(timer);
     };
   }, [items]);
