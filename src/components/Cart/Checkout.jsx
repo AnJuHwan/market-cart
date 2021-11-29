@@ -4,7 +4,7 @@ import styles from './Checkout.module.css';
 const isEmpty = (value) => value.trim().length === 0;
 const isFiveChars = (value) => value.trim().length === 5;
 
-const Checkout = ({ onCancel }) => {
+const Checkout = ({ onCancel, onConfirm }) => {
   const [formInputsValidity, setFormInputsValidity] = useState({
     name: true,
     street: true,
@@ -45,6 +45,12 @@ const Checkout = ({ onCancel }) => {
     if (!formIsValid) {
       return;
     }
+    onConfirm({
+      name: enteredName,
+      street: enteredStreet,
+      city: enteredCity,
+      postalCode: enteredPostalCode,
+    });
 
     console.log(enteredName, enteredStreet, enteredPostalCode, enteredCity);
   };
