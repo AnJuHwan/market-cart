@@ -8,6 +8,8 @@ import Checkout from './Checkout';
 
 const Cart = ({ onClose }) => {
   const [isCheckout, setIsCheckout] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [didSubmit, setDidSubmit] = useState(false);
   const cartContext = useContext(CartContext);
 
   const totalAmount = `$${cartContext.totalAmount.toFixed(2)}`;
@@ -25,8 +27,9 @@ const Cart = ({ onClose }) => {
     setIsCheckout(true);
   };
 
-  const submitOrderHandler = (userData) => {
-    fetch(
+  const submitOrderHandler = async (userData) => {
+    setIsSubmitting(true);
+    await fetch(
       'https://react-http-test-8f6fa-default-rtdb.firebaseio.com/order.json',
       {
         method: 'POST',
@@ -36,6 +39,9 @@ const Cart = ({ onClose }) => {
         }),
       },
     );
+    setIsSubmitting(false);
+    setDidSubmit(true);
+    cartContext.clearCart();
   };
 
   const cartItems = (
@@ -66,8 +72,8 @@ const Cart = ({ onClose }) => {
     </div>
   );
 
-  return (
-    <Modal onClose={onClose}>
+  const cartModalContent = (
+    <>
       {cartItems}
       <div className={styles.total}>
         <span>Total Amount</span>
@@ -76,7 +82,28 @@ const Cart = ({ onClose }) => {
       {isCheckout && (
         <Checkout onConfirm={submitOrderHandler} onCancel={onClose} />
       )}
-      {!isCheckout && modalActions}
+      {!isCheckout && modalActions}{' '}
+    </>
+  );
+
+  const isSubmittingModalContent = <p>Sending order data...</p>;
+
+  const didSubmitModalContent = (
+    <>
+      <p>Successfully sent the order!</p>{' '}
+      <div className={styles.actions}>
+        <button className={styles['button--alt']} onClick={onClose}>
+          Close
+        </button>
+      </div>
+    </>
+  );
+
+  return (
+    <Modal onClose={onClose}>
+      {!isSubmitting && !didSubmit && cartModalContent}
+      {isSubmitting && isSubmittingModalContent}
+      {!isSubmitting && didSubmit && didSubmitModalContent}
     </Modal>
   );
 };
