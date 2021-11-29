@@ -20,9 +20,11 @@ const AvailableMeals = (props) => {
       }
 
       const responseData = await response.json();
+      console.log(responseData);
       const loadedMeals = [];
 
       for (const key in responseData) {
+        console.log(responseData[key]);
         loadedMeals.push({
           id: key,
           name: responseData[key].name,
